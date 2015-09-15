@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>be.nabu.jfx</groupId>
@@ -12,30 +11,17 @@
 
 	<build>
 		<plugins>
-                        <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-compiler-plugin</artifactId>
-                                <configuration>
-                                        <source>1.8</source>
-                                        <target>1.8</target>
-                                </configuration>
-                        </plugin>
-                </plugins>
-        </build>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-
-	<properties>
-		<javafx.version>2.2</javafx.version>
-		<javafx.runtime>/home/alex/apps/jdk1.7.0_60/jre</javafx.runtime>
-	</properties>
-	
-<!--	<dependencies>
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>javafx</artifactId>
-			<version>${javafx.version}</version>
-			<scope>system</scope>
-			<systemPath>${javafx.runtime}/lib/jfxrt.jar</systemPath>
-		</dependency>
-	</dependencies>-->
+	<!-- <dependencies> <dependency> <groupId>com.oracle</groupId> <artifactId>javafx</artifactId> <version>${javafx.version}</version> <scope>system</scope> 
+		<systemPath>${javafx.runtime}/lib/jfxrt.jar</systemPath> </dependency> </dependencies> -->
 </project>
