@@ -1,0 +1,26 @@
+.jfx-tree {
+	-fx-skin: "be.nabu.jfx.control.tree.TreeSkin";
+	-fx-pref-width: 150px;
+	-fx-max-width: 150px;
+	-fx-min-width: 150px;
+}
+
+.jfx-tree .tree-cell {
+	-fx-spacing: 0px;
+}
+
+.jfx-tree .selected {
+	-fx-background-color: -fx-accent;
+	-fx-text-fill: -fx-light-text-color;
+}
+
+.jfx-tree .deselected {
+	-fx-background-color: -fx-control-inner-background;
+	-fx-text-fill: -fx-dark-text-color;
+}
+
+.jfx-tree .editableTextfield {
+	-fx-background-color: #fafad2;
+	-fx-border-width: 0;
+	-fx-padding: 0;
+}
