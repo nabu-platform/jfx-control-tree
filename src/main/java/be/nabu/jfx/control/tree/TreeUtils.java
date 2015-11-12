@@ -2,6 +2,7 @@ package be.nabu.jfx.control.tree;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,23 @@ public class TreeUtils {
 	
 	public interface TreeItemCreator<T> {
 		public TreeItem<T> create(TreeItem<T> parent, T item);
+	}
+	
+	public static String getPath(TreeItem<?> item) {
+		List<String> parts = new ArrayList<String>();
+		while (item != null) {
+			parts.add(item.getName());
+			item = item.getParent();
+		}
+		Collections.reverse(parts);
+		StringBuilder builder = new StringBuilder();
+		for (int i = 0; i < parts.size(); i++) {
+			if (i > 0) {
+				builder.append("/");
+			}
+			builder.append(parts.get(i));
+		}
+		return builder.toString();
 	}
 	
 	public static <T> List<TreeItem<T>> refreshChildren(TreeItemCreator<T> creator, TreeItem<T> item, Collection<T> children) {
