@@ -41,6 +41,7 @@ public class Tree<T> extends Control {
 	private ClipboardHandler clipboardHandler;
 	private boolean autoscrollOnSelect = true;
 	private boolean autodetectDirty = true;
+	private String userStyleAgent;
 	
 	private Callback<TreeItem<T>, TreeCellValue<T>> cellValueFactory;
 	
@@ -192,7 +193,14 @@ public class Tree<T> extends Control {
 	
 	@Override
 	public String getUserAgentStylesheet() {
-		return Tree.class.getClassLoader().getResource("jfx-tree.css").toExternalForm();
+		if (userStyleAgent == null) {
+			synchronized(this) {
+				if (userStyleAgent == null) {
+					userStyleAgent = Tree.class.getClassLoader().getResource("jfx-tree.css").toExternalForm();
+				}
+			}
+		}
+		return userStyleAgent;
 	}
 	
 	public DoubleProperty spacingProperty() {

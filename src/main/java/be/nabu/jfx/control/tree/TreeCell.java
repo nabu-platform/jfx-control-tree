@@ -55,6 +55,7 @@ public class TreeCell<T> implements Refreshable, Focusable {
 	private TreeItem<T> item;
 	private BooleanProperty expanded = new SimpleBooleanProperty(false);
 	BooleanProperty selected = new SimpleBooleanProperty(false);
+	private static Map<String, Image> images = new HashMap<String, Image>();
 	
 	/**
 	 * Indicates whether or not this component should be refreshed
@@ -669,18 +670,25 @@ public class TreeCell<T> implements Refreshable, Focusable {
 	}
 	
 	static Image loadImage(String name) {
-		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
-		try {
-			return new Image(input);
-		}
-		finally {
-			try {
-				input.close();
+		if (!images.containsKey(name)) {
+			synchronized(images) {
+				if (!images.containsKey(name)) {
+					InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
+					try {
+						images.put(name, new Image(input));
+					}
+					finally {
+						try {
+							input.close();
+						}
+						catch (IOException e) {
+							throw new RuntimeException(e);
+						}
+					}
+				}
 			}
-			catch (IOException e) {
-				throw new RuntimeException(e);
-			}
 		}
+		return images.get(name);
 	}
 	
 	static ImageView loadGraphic(String name) {
