@@ -758,4 +758,11 @@ public class TreeCell<T> implements Refreshable, Focusable {
 		this.isDirty = isDirty;
 	}
 	
+	public boolean isInitialized() {
+		return isInitialized;
+	}
+	
+	public boolean isLoaded() {
+		return isInitialized && isLoaded;
+	}
 }
