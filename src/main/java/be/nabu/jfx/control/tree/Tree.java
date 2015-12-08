@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import be.nabu.jfx.control.tree.clipboard.ClipboardHandler;
+import be.nabu.jfx.control.tree.drag.TreeDragDrop;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -164,8 +165,9 @@ public class Tree<T> extends Control {
 	public TreeCell<T> getTreeCell(TreeItem<T> item) {
 		List<TreeItem<T>> path = getPath(item);
 		// not the same root?
-		if (!path.get(0).equals(rootCell.getItem()))
-			return null;
+		if (!path.get(0).equals(rootCell.getItem())) {
+			throw new IllegalArgumentException("The tree item does not come from the root of this tree");
+		}
 		TreeCell<T> cell = rootCell;
 		for (int i = 1; i < path.size(); i++) {
 			cell = cell.getCell(path.get(i));
@@ -360,6 +362,9 @@ public class Tree<T> extends Control {
 	public void forceLoad(TreeItem<T> item, boolean recursive) {
 		for (TreeItem<T> child : item.getChildren()) {
 			TreeCell<T> cell = getTreeCell(child);
+			if (cell == null) {
+				throw new IllegalStateException("Can not find treecell for: " + TreeDragDrop.getPath(item));
+			}
 			cell.initialize();
 			if (recursive) {
 				forceLoad(child, recursive);
