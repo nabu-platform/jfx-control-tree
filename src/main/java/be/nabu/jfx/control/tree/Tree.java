@@ -218,10 +218,14 @@ public class Tree<T> extends Control {
 	}
 	
 	public TreeItem<T> resolve(String path) {
-		return resolve(rootProperty().get(), path.replaceAll("^[/]*(.*?)[/]*$", "$1").split("/"), 0);
+		return resolve(path, true);
 	}
 	
-	private TreeItem<T> resolve(TreeItem<T> against, String [] path, int counter) {
+	public TreeItem<T> resolve(String path, boolean fail) {
+		return resolve(rootProperty().get(), path.replaceAll("^[/]*(.*?)[/]*$", "$1").split("/"), 0, fail);
+	}
+	
+	private TreeItem<T> resolve(TreeItem<T> against, String [] path, int counter, boolean fail) {
 		if (against.leafProperty().get())
 			throw new IllegalArgumentException("Can't resolve against a leaf");
 		TreeItem<T> target = null;
@@ -239,13 +243,18 @@ public class Tree<T> extends Control {
 				}
 				builder.append(part);
 			}
-			throw new IllegalArgumentException("The path does not exist: " + builder.toString());
+			if (fail) {
+				throw new IllegalArgumentException("The path does not exist: " + builder.toString());
+			}
+			else {
+				return null;
+			}
 		}
 		
 		if (counter == path.length - 1)
 			return target;
 		else
-			return resolve(target, path, counter + 1);
+			return resolve(target, path, counter + 1, fail);
 	}
 
 	public void addRefreshListener(Refreshable...refreshables) {
