@@ -50,6 +50,10 @@ public class Tree<T> extends Control {
 	
 	private EventHandler<MouseEvent> clickHandler;
 
+	public Tree() {
+		this(new NameTreeCellValueFactory<T>());
+	}
+	
 	@SuppressWarnings("unchecked")
 	public Tree(Marshallable<T> marshallable) {
 		this(marshallable, marshallable instanceof Updateable ? (Updateable<T>) marshallable : null);
