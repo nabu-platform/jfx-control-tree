@@ -231,7 +231,7 @@ public class Tree<T> extends Control {
 	
 	private TreeItem<T> resolve(TreeItem<T> against, String [] path, int counter, boolean fail) {
 		if (against.leafProperty().get())
-			throw new IllegalArgumentException("Can't resolve against a leaf");
+			throw new IllegalArgumentException("Can't resolve against a leaf: " + Arrays.asList(path));
 		TreeItem<T> target = null;
 		for (TreeItem<T> child : against.getChildren()) {
 			if (child.getName().equals(path[counter])) {
