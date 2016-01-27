@@ -443,7 +443,9 @@ public class TreeCell<T> implements Refreshable, Focusable {
 							}
 							else if (getChildrenAsMap().size() > 0) {
 								select(getCell(getItem().getChildren().get(0)), false);
-								tree.autoscroll();
+								if (tree.isAutoscrollOnSelect()) {
+									tree.autoscroll();
+								}
 							}
 							event.consume();
 						}
@@ -457,7 +459,9 @@ public class TreeCell<T> implements Refreshable, Focusable {
 						}
 						else {
 							select(getParent(), false);
-							tree.autoscroll();
+							if (tree.isAutoscrollOnSelect()) {
+								tree.autoscroll();
+							}
 						}
 						event.consume();
 					}

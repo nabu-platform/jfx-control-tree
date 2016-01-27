@@ -29,7 +29,7 @@ public class TreeUtils {
 			}
 			builder.append(parts.get(i));
 		}
-		return builder.toString();
+		return builder.toString().replace("//", "/");
 	}
 	
 	public static <T> List<TreeItem<T>> refreshChildren(TreeItemCreator<T> creator, TreeItem<T> item, Collection<T> children) {

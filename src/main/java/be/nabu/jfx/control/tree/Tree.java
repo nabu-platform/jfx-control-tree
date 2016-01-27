@@ -132,7 +132,7 @@ public class Tree<T> extends Control {
 	public void autoscroll(TreeCell<T> to) {
 		ScrollPane parent = JFXUtils.getScrollParent(getRootCell().getNode());
 		if (parent != null) {
-			JFXUtils.focusInScroll(parent, to);
+			JFXUtils.focusInScroll(parent, to, false);
 		}
 	}
 	

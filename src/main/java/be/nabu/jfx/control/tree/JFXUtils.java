@@ -5,7 +5,7 @@ import javafx.scene.control.ScrollPane;
 
 public class JFXUtils {
 
-	public static void focusInScroll(ScrollPane pane, TreeCell<?> cell) {
+	public static void focusInScroll(ScrollPane pane, TreeCell<?> cell, boolean horizontal) {
 		double width = pane.getContent().getBoundsInLocal().getWidth();
 		double height = pane.getContent().getBoundsInLocal().getHeight();
 
@@ -13,7 +13,9 @@ public class JFXUtils {
 		double y = cell.treeLayoutYProperty().get() + (pane.getVvalue() * height / 2);
 		
 		pane.setVvalue(y / height);
-		pane.setHvalue(width / x);
+		if (horizontal) {
+			pane.setHvalue(width / x);
+		}
 	}
 	
 	public static void scrollDown(TreeCell<?> belowCell) {
