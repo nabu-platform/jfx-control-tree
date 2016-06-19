@@ -94,7 +94,7 @@ public class Tree<T> extends Control {
 			@Override
 			public void handle(KeyEvent event) {
 				if (event.getCode() == KeyCode.DELETE) {
-					for (TreeCell<T> selected : getSelectionModel().getSelectedItems()) {
+					for (TreeCell<T> selected : new ArrayList<TreeCell<T>>(getSelectionModel().getSelectedItems())) {
 						if (selected.getItem() instanceof RemovableTreeItem) {
 							if (((RemovableTreeItem<T>) selected.getItem()).remove()) {
 								selected.getParent().refresh();
@@ -107,6 +107,7 @@ public class Tree<T> extends Control {
 					for (TreeCell<T> selected : getSelectionModel().getSelectedItems()) {
 						selected.refresh();
 					}
+					event.consume();
 				}
 				// copy
 				else if (event.getCode() == KeyCode.C && event.isControlDown()) {
