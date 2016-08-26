@@ -75,6 +75,10 @@ public class TreeDragDrop {
 						clipboard.put(getDataFormat(DATA_TYPE_TREE), dragSource.getTree().getId());
 					}
 					dragboard.setContent(clipboard);
+					String asText = dragListeners.get(dragSource.getTree()).getAsText(dragSource);
+					if (asText != null) {
+						clipboard.put(DataFormat.PLAIN_TEXT, asText);
+					}
 					event.consume();
 					// whether or not you drop the drag event onto a valid target, you want the dragging to stop
 					// we subscribe to this event do reset the state of the ongoing drag
