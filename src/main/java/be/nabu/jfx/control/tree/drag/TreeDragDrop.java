@@ -147,16 +147,18 @@ public class TreeDragDrop {
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
 			public void handle(DragEvent event) {
-				TreeCell target = (TreeCell<?>) ((Node) event.getTarget()).getUserData();
-				// drop it on the first one that accepts
-				for (TreeDropListener<?> listener : dropListeners.get(target.getTree())) {
-					if (listener.canDrop(dragListeners.get(dragSource.getTree()).getDataType(dragSource), target, dragSource, dragListeners.get(dragSource.getTree()).getTransferMode())) {
-						listener.drop(dragListeners.get(dragSource.getTree()).getDataType(dragSource), target, dragSource, dragListeners.get(dragSource.getTree()).getTransferMode());
-						break;
+				if (!event.isConsumed()) {
+					TreeCell target = (TreeCell<?>) ((Node) event.getTarget()).getUserData();
+					// drop it on the first one that accepts
+					for (TreeDropListener<?> listener : dropListeners.get(target.getTree())) {
+						if (listener.canDrop(dragListeners.get(dragSource.getTree()).getDataType(dragSource), target, dragSource, dragListeners.get(dragSource.getTree()).getTransferMode())) {
+							listener.drop(dragListeners.get(dragSource.getTree()).getDataType(dragSource), target, dragSource, dragListeners.get(dragSource.getTree()).getTransferMode());
+							break;
+						}
 					}
+					dragListeners.get(dragSource.getTree()).stopDrag(dragSource, true);
+					stopDrag(true);
 				}
-				dragListeners.get(dragSource.getTree()).stopDrag(dragSource, true);
-				stopDrag(true);
 			}
 		});
 	}
