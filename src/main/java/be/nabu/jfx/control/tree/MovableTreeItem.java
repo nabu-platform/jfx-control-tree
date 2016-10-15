@@ -9,5 +9,5 @@ public interface MovableTreeItem<T> extends TreeItem<T> {
 		RIGHT
 	}
 	
-	public void move(Direction direction);
+	public TreeItem<T> move(Direction direction);
 }

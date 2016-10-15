@@ -414,7 +414,14 @@ public class TreeCell<T> implements Refreshable, Focusable {
 				public void handle(KeyEvent event) {
 					if (event.getCode() == KeyCode.DOWN) {
 						if (event.isControlDown() && item instanceof MovableTreeItem) {
-							((MovableTreeItem<T>) item).move(Direction.DOWN);
+							TreeItem<T> move = ((MovableTreeItem<T>) item).move(Direction.DOWN);
+							if (move != null) {
+								TreeCell<T> treeCell = TreeCell.this.tree.getTreeCell(move);
+								if (treeCell != null) {
+									treeCell.select();
+									treeCell.focus();
+								}
+							}
 						}
 						else {
 							TreeCell.this.tree.getSelectionModel().selectNext();
@@ -423,7 +430,14 @@ public class TreeCell<T> implements Refreshable, Focusable {
 					}
 					else if (event.getCode() == KeyCode.UP) {
 						if (event.isControlDown() && item instanceof MovableTreeItem) {
-							((MovableTreeItem<T>) item).move(Direction.UP);
+							TreeItem<T> move = ((MovableTreeItem<T>) item).move(Direction.UP);
+							if (move != null) {
+								TreeCell<T> treeCell = TreeCell.this.tree.getTreeCell(move);
+								if (treeCell != null) {
+									treeCell.select();
+									treeCell.focus();
+								}
+							}
 						}
 						else {
 							TreeCell.this.tree.getSelectionModel().selectPrevious();
@@ -433,7 +447,14 @@ public class TreeCell<T> implements Refreshable, Focusable {
 					// if you press right arrow, make sure it's expanded, if it is already open, select first child
 					else if (event.getCode() == KeyCode.RIGHT) {
 						if (event.isControlDown() && item instanceof MovableTreeItem) {
-							((MovableTreeItem<T>) item).move(Direction.RIGHT);
+							TreeItem<T> move = ((MovableTreeItem<T>) item).move(Direction.RIGHT);
+							if (move != null) {
+								TreeCell<T> treeCell = TreeCell.this.tree.getTreeCell(move);
+								if (treeCell != null) {
+									treeCell.select();
+									treeCell.focus();
+								}
+							}
 							event.consume();
 						}
 						else if (!getItem().leafProperty().getValue()) {
@@ -452,7 +473,14 @@ public class TreeCell<T> implements Refreshable, Focusable {
 					}
 					else if (event.getCode() == KeyCode.LEFT) {
 						if (event.isControlDown() && item instanceof MovableTreeItem) {
-							((MovableTreeItem<T>) item).move(Direction.LEFT);
+							TreeItem<T> move = ((MovableTreeItem<T>) item).move(Direction.LEFT);
+							if (move != null) {
+								TreeCell<T> treeCell = TreeCell.this.tree.getTreeCell(move);
+								if (treeCell != null) {
+									treeCell.select();
+									treeCell.focus();
+								}
+							}
 						}
 						else if (!getItem().leafProperty().getValue() && expanded.getValue()) {
 							expanded.setValue(false);
