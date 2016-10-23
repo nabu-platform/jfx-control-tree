@@ -7,6 +7,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -126,7 +127,8 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 			if (marshallable instanceof MarshallableWithDescription) {
 				String description = ((MarshallableWithDescription<T>) marshallable).getDescription(item.itemProperty().getValue());
 				if (description != null) {
-					label.setText(label.getText() + " (" + description + ")");
+					label.setTooltip(new Tooltip(description));
+//					label.setText(label.getText() + " (" + description + ")");
 				}
 			}
 		}
