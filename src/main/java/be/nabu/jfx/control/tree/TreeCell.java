@@ -237,6 +237,16 @@ public class TreeCell<T> implements Refreshable, Focusable {
 		}
 	}
 	
+	public void expandAll(int count) {
+		initialize();
+		expandedProperty().set(true);
+		if (count > 0) {
+			for (TreeCell<T> child : children.values()) {
+				child.expandAll(count - 1);
+			}
+		}
+	}
+	
 	public void collapseAll() {
 		expandedProperty().set(false);
 		for (TreeCell<T> child : children.values()) {
