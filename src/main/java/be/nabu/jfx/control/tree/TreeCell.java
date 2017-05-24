@@ -397,14 +397,14 @@ public class TreeCell<T> implements Refreshable, Focusable {
 							tree.getRootCell().focus();
 							// single click = select
 							if (event.getClickCount() == 1) {
-								if (event.isControlDown() && tree.getSelectionModel().getSelectedItems().contains(TreeCell.this)) {
+								if ((event.isControlDown() ^ tree.isInvertSelection()) && tree.getSelectionModel().getSelectedItems().contains(TreeCell.this)) {
 									tree.getSelectionModel().getSelectedItems().remove(TreeCell.this);
 									event.consume();
 								}
 								// if the item is not selected yet, select it first
 								// otherwise trigger selection _only_ if the mouse button is primary, otherwise it has the effect that the right click context menu is disabled every time even if it is selected
 								else if (!tree.getSelectionModel().getSelectedItems().contains(TreeCell.this) || event.getButton() == MouseButton.PRIMARY) {
-									select(TreeCell.this, event.isControlDown());
+									select(TreeCell.this, event.isControlDown() ^ tree.isInvertSelection());
 									event.consume();
 								}
 							}

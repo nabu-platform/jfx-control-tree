@@ -43,6 +43,7 @@ public class Tree<T> extends Control {
 	private boolean autoscrollOnSelect = true;
 	private boolean autodetectDirty = true;
 	private String userStyleAgent;
+	private boolean invertSelection;
 	
 	private Callback<TreeItem<T>, TreeCellValue<T>> cellValueFactory;
 	
@@ -249,7 +250,7 @@ public class Tree<T> extends Control {
 				builder.append(part);
 			}
 			if (fail) {
-				throw new IllegalArgumentException("The path does not exist: " + builder.toString());
+				throw new IllegalArgumentException("The path does not exist: " + builder.toString() + " [" + counter + "]");
 			}
 			else {
 				return null;
@@ -396,6 +397,14 @@ public class Tree<T> extends Control {
 	}
 	public void setAutodetectDirty(boolean autodetectDirty) {
 		this.autodetectDirty = autodetectDirty;
+	}
+
+	public boolean isInvertSelection() {
+		return invertSelection;
+	}
+
+	public void setInvertSelection(boolean invertSelection) {
+		this.invertSelection = invertSelection;
 	}
 	
 }
