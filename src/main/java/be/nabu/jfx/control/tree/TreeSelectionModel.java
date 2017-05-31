@@ -71,9 +71,14 @@ public class TreeSelectionModel<T> extends MultipleSelectionModel<TreeCell<T>> {
 
 	@Override
 	public void select(TreeCell<T> item) {
+		// always remove the item first to make sure we trigger any listeners
+		selectedItems.remove(item);
 		if (getSelectionMode() == SelectionMode.SINGLE)
 			clearSelection();
 		selectedItems.add(item);
+		// make sure we unset the parent first to trigger listeners
+		super.setSelectedItem(null);
+		// then reset
 		super.setSelectedItem(item);
 	}
 

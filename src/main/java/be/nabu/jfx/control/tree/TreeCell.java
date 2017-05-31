@@ -314,7 +314,6 @@ public class TreeCell<T> implements Refreshable, Focusable {
 	}
 
 	private void select(TreeCell<T> cell, boolean appendSelection) {
-		cell.show();
 		if (!appendSelection) {
 			tree.getSelectionModel().clearSelection();
 		}
