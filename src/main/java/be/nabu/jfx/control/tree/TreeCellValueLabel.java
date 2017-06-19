@@ -44,7 +44,7 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 		node.getChildren().add(label);
 
 		// if the property can be updated, enable F2 on label
-		if (updateable != null && item.editableProperty().get()) {
+		if (updateable != null) {
 			node.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 				@Override
 				public void handle(KeyEvent event) {
