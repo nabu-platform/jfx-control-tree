@@ -10,7 +10,7 @@
 }
 
 .jfx-tree .selected {
-	-fx-background-color: -fx-accent;
+	-fx-background-color: #cccccc;
 	-fx-text-fill: -fx-light-text-color;
 }
 
