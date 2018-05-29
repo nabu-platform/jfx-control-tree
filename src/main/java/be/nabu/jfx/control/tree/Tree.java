@@ -106,7 +106,7 @@ public class Tree<T> extends Control {
 				}
 				else if (event.getCode() == KeyCode.F5) {
 					for (TreeCell<T> selected : getSelectionModel().getSelectedItems()) {
-						selected.refresh();
+						selected.refresh(event.isControlDown());
 					}
 					event.consume();
 				}

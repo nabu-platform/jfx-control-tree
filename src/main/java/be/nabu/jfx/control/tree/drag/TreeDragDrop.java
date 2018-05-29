@@ -182,14 +182,16 @@ public class TreeDragDrop {
 	
 	@SuppressWarnings("unchecked")
 	private void stopDrag(boolean successful) {
-		if (endHandler != null) {
-			dragSource.getTree().getScene().removeEventHandler(DragEvent.DRAG_DONE, endHandler);
+		if (dragSource != null) {
+			if (endHandler != null) {
+				dragSource.getTree().getScene().removeEventHandler(DragEvent.DRAG_DONE, endHandler);
+			}
+			if (!successful) {
+				dragListeners.get(dragSource.getTree()).stopDrag(dragSource, false);
+			}
+			endHandler = null;
+			dragSource = null;
 		}
-		if (!successful) {
-			dragListeners.get(dragSource.getTree()).stopDrag(dragSource, false);
-		}
-		endHandler = null;
-		dragSource = null;
 	}
 	
 	public class EndHandler implements EventHandler<DragEvent> {

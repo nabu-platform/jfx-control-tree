@@ -122,7 +122,7 @@ public class TreeCell<T> implements Refreshable, Focusable {
 			public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean newValue) {
 				if (newValue && !isInitialized) {
 					initialize();
-					refresh(true);
+					internalRefresh(true, false);
 				}
 				for (final TreeCell<T> child : children.values()) {
 					if (newValue) {
@@ -340,13 +340,18 @@ public class TreeCell<T> implements Refreshable, Focusable {
 	
 	@Override
 	public void refresh() {
-		refresh(true);
+		internalRefresh(true, false);
 	}
 
-	private void refresh(boolean isFirst) {
+	@Override
+	public void refresh(boolean hard) {
+		internalRefresh(true, hard);
+	}
+	
+	private void internalRefresh(boolean isFirst, boolean hard) {
 		isRefreshing = true;
 		// first force a refresh on the current item
-		item.refresh();
+		item.refresh(hard);
 		isRefreshing = false;
 		// then refresh the child contents which will rebuild the treecells
 		refreshItemContainer(isFirst);
@@ -358,7 +363,7 @@ public class TreeCell<T> implements Refreshable, Focusable {
 		for (TreeCell<T> child : children.values()) {
 			// only reload immediate children
 			if (child.isLoaded || isFirst) {
-				child.refresh(false);
+				child.internalRefresh(false, hard);
 			}
 		}
 		// first refresh all the children (where necessary)
