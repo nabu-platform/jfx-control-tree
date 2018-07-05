@@ -49,7 +49,7 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 				@Override
 				public void handle(KeyEvent event) {
 					// check the editable property every time, someone might turn it off
-					if (item.editableProperty().get() && !isEditing && event.getCode() == KeyCode.F2) {
+					if (item.editableProperty().get() && !isEditing && event.getCode() == KeyCode.F2 && !event.isMetaDown()) {
 						edit();
 						event.consume();
 					}
