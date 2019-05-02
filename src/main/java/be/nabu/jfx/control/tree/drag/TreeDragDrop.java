@@ -147,7 +147,7 @@ public class TreeDragDrop {
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
 			public void handle(DragEvent event) {
-				if (!event.isConsumed()) {
+				if (!event.isConsumed() && !event.isDropCompleted() && dragSource != null && dragSource.getTree() != null && dragListeners.get(dragSource.getTree()) != null) {
 					TreeCell target = (TreeCell<?>) ((Node) event.getTarget()).getUserData();
 					// drop it on the first one that accepts
 					for (TreeDropListener<?> listener : dropListeners.get(target.getTree())) {
@@ -158,6 +158,7 @@ public class TreeDragDrop {
 					}
 					dragListeners.get(dragSource.getTree()).stopDrag(dragSource, true);
 					stopDrag(true);
+					event.setDropCompleted(true);
 				}
 			}
 		});
@@ -183,7 +184,7 @@ public class TreeDragDrop {
 	@SuppressWarnings("unchecked")
 	private void stopDrag(boolean successful) {
 		if (dragSource != null) {
-			if (endHandler != null) {
+			if (endHandler != null && dragSource.getTree() != null && dragSource.getTree().getScene() != null) {
 				dragSource.getTree().getScene().removeEventHandler(DragEvent.DRAG_DONE, endHandler);
 			}
 			if (!successful) {
