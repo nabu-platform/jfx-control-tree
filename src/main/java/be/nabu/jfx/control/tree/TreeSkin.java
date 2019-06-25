@@ -24,7 +24,9 @@ public class TreeSkin<T> extends SkinBase<Tree<T>> {
 	}
 	
 	private void refresh() {
-		getChildren().clear();
-		getChildren().add(getSkinnable().getRootCell().getNode());
+		if (getSkinnable() != null && getSkinnable().getRootCell() != null && getSkinnable().getRootCell().getNode() != null) {
+			getChildren().clear();
+			getChildren().add(getSkinnable().getRootCell().getNode());
+		}
 	}
 }
