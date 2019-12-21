@@ -26,6 +26,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -35,6 +36,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
@@ -547,6 +549,7 @@ public class TreeCell<T> implements Refreshable, Focusable {
 			itemContainer.getStyleClass().add("jfx-tree-cell");
 			itemContainer.getChildren().add(buildItemDisplay());
 			isDirty = true;
+			HBox.setHgrow(itemContainer, Priority.SOMETIMES);
 		}
 		// try to auto-detect dirty nodes
 		if (getTree().isAutodetectDirty() && !item.leafProperty().getValue()) {
@@ -622,6 +625,8 @@ public class TreeCell<T> implements Refreshable, Focusable {
 			itemDisplay = new HBox();
 			displayIcon = new HBox();
 			itemDisplay.getChildren().add(displayIcon);
+			itemDisplay.setAlignment(Pos.CENTER_LEFT);
+			displayIcon.setAlignment(Pos.CENTER);
 			refreshItemDisplayIcon();
 			// toggle expanded if you click on it
 			displayIcon.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
