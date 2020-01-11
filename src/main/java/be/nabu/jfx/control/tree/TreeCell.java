@@ -429,7 +429,7 @@ public class TreeCell<T> implements Refreshable, Focusable {
 				@Override
 				public void handle(KeyEvent event) {
 					if (event.getCode() == KeyCode.DOWN) {
-						if (event.isControlDown() && item instanceof MovableTreeItem) {
+						if (event.isControlDown() && item instanceof MovableTreeItem && !tree.isReadOnly()) {
 							TreeItem<T> move = ((MovableTreeItem<T>) item).move(Direction.DOWN);
 							if (move != null) {
 								TreeCell<T> treeCell = TreeCell.this.tree.getTreeCell(move);
@@ -445,7 +445,7 @@ public class TreeCell<T> implements Refreshable, Focusable {
 						event.consume();
 					}
 					else if (event.getCode() == KeyCode.UP) {
-						if (event.isControlDown() && item instanceof MovableTreeItem) {
+						if (event.isControlDown() && item instanceof MovableTreeItem && !tree.isReadOnly()) {
 							TreeItem<T> move = ((MovableTreeItem<T>) item).move(Direction.UP);
 							if (move != null) {
 								TreeCell<T> treeCell = TreeCell.this.tree.getTreeCell(move);
@@ -462,7 +462,7 @@ public class TreeCell<T> implements Refreshable, Focusable {
 					}
 					// if you press right arrow, make sure it's expanded, if it is already open, select first child
 					else if (event.getCode() == KeyCode.RIGHT) {
-						if (event.isControlDown() && item instanceof MovableTreeItem) {
+						if (event.isControlDown() && item instanceof MovableTreeItem && !tree.isReadOnly()) {
 							TreeItem<T> move = ((MovableTreeItem<T>) item).move(Direction.RIGHT);
 							if (move != null) {
 								TreeCell<T> treeCell = TreeCell.this.tree.getTreeCell(move);
@@ -488,7 +488,7 @@ public class TreeCell<T> implements Refreshable, Focusable {
 						}
 					}
 					else if (event.getCode() == KeyCode.LEFT) {
-						if (event.isControlDown() && item instanceof MovableTreeItem) {
+						if (event.isControlDown() && item instanceof MovableTreeItem && !tree.isReadOnly()) {
 							TreeItem<T> move = ((MovableTreeItem<T>) item).move(Direction.LEFT);
 							if (move != null) {
 								TreeCell<T> treeCell = TreeCell.this.tree.getTreeCell(move);

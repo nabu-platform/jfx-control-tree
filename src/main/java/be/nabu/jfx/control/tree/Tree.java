@@ -43,7 +43,7 @@ public class Tree<T> extends Control {
 	private boolean autoscrollOnSelect = true;
 	private boolean autodetectDirty = true;
 	private String userStyleAgent;
-	private boolean invertSelection;
+	private boolean invertSelection, readOnly;
 	
 	private Callback<TreeItem<T>, TreeCellValue<T>> cellValueFactory;
 	
@@ -94,7 +94,7 @@ public class Tree<T> extends Control {
 		this.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
-				if (event.getCode() == KeyCode.DELETE) {
+				if (event.getCode() == KeyCode.DELETE && !readOnly) {
 					for (TreeCell<T> selected : new ArrayList<TreeCell<T>>(getSelectionModel().getSelectedItems())) {
 						if (selected.getItem() instanceof RemovableTreeItem) {
 							if (((RemovableTreeItem<T>) selected.getItem()).remove()) {
@@ -121,7 +121,7 @@ public class Tree<T> extends Control {
 					}
 				}
 				// paste
-				else if (event.getCode() == KeyCode.V && event.isControlDown()) {
+				else if (event.getCode() == KeyCode.V && event.isControlDown() && !readOnly) {
 					if (clipboardHandler != null) {
 						clipboardHandler.setClipboard(Clipboard.getSystemClipboard());
 						event.consume();
@@ -405,6 +405,14 @@ public class Tree<T> extends Control {
 
 	public void setInvertSelection(boolean invertSelection) {
 		this.invertSelection = invertSelection;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
 	}
 	
 }
