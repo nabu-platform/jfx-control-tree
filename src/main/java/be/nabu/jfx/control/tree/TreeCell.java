@@ -700,6 +700,7 @@ public class TreeCell<T> implements Refreshable, Focusable {
 		if (cellValue == null) {
 			cellValue = tree.getCellValueFactory().call(item);
 			cellValue.cellProperty().setValue(this);
+			cellValue.getNode().getStyleClass().add("treeCellValue");
 		}
 		return cellValue;
 	}

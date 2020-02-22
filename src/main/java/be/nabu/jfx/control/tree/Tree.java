@@ -20,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.Clipboard;
@@ -61,10 +62,18 @@ public class Tree<T> extends Control {
 	}
 	
 	public Tree(Marshallable<T> marshallable, Updateable<T> updateable) {
-		this(new BaseTreeCellValueFactory<T>(marshallable, updateable));
+		this(marshallable, updateable, null);
+	}
+	
+	public Tree(Marshallable<T> marshallable, Updateable<T> updateable, CellDescriptor cellDescriptor) {
+		this(new BaseTreeCellValueFactory<T>(marshallable, updateable, cellDescriptor));
 	}
 
 	public Tree(Callback<TreeItem<T>, TreeCellValue<T>> cellValueFactory) {
+		initialize(cellValueFactory);
+	}
+
+	private void initialize(Callback<TreeItem<T>, TreeCellValue<T>> cellValueFactory) {
 		minWidthProperty().bind(prefWidthProperty());
 		this.cellValueFactory = cellValueFactory;
 		getStyleClass().add("jfx-tree");
@@ -415,4 +424,14 @@ public class Tree<T> extends Control {
 		this.readOnly = readOnly;
 	}
 	
+	private CellDescriptor cellDescriptor;
+	public CellDescriptor getCellDescriptor() {
+		return cellDescriptor;
+	}
+	public void setCellDescriptor(CellDescriptor cellEnricher) {
+		this.cellDescriptor = cellEnricher;
+	}
+	public static interface CellDescriptor {
+		public void describe(Label label, String description);
+	}
 }

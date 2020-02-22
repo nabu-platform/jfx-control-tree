@@ -1,5 +1,6 @@
 package be.nabu.jfx.control.tree;
 
+import be.nabu.jfx.control.tree.Tree.CellDescriptor;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -21,15 +22,17 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 	private TreeItem<T> item;
 	
 	private HBox node = new HBox();
-	private Label label = new Label();
+	private Label label = new Label(), descriptionLabel = new Label();	// if we put a graphic on the original label, it sometimes gets messed up for reasons unknown
 	private TextField textField = new TextField();
 	private boolean isEditing = false;
 	private ObjectProperty<TreeCell<T>> cell = new SimpleObjectProperty<TreeCell<T>>();
+	private CellDescriptor cellDescriptor;
 	
-	TreeCellValueLabel(final TreeItem<T> item, Marshallable<T> marshallable, Updateable<T> updateable) {
+	TreeCellValueLabel(final TreeItem<T> item, Marshallable<T> marshallable, Updateable<T> updateable, CellDescriptor cellDescriptor) {
 		this.item = item;
 		this.marshallable = marshallable;
 		this.updateable = updateable;
+		this.cellDescriptor = cellDescriptor;
 		
 		this.item.itemProperty().addListener(new ChangeListener<T>() {
 			@Override
@@ -41,7 +44,7 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 		refresh();
 		
 		// add the label to the hbox
-		node.getChildren().add(label);
+		node.getChildren().addAll(label, descriptionLabel);
 
 		// if the property can be updated, enable F2 on label
 		if (updateable != null) {
@@ -92,7 +95,7 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 				);
 				refresh();
 				node.getChildren().clear();
-				node.getChildren().add(label);
+				node.getChildren().addAll(label, descriptionLabel);
 				isEditing = false;
 				cellProperty().getValue().select();
 				cellProperty().get().refresh();
@@ -105,7 +108,7 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 	
 	public void undoEdit() {
 		node.getChildren().clear();
-		node.getChildren().add(label);
+		node.getChildren().addAll(label, descriptionLabel);
 		cellProperty().getValue().select();
 		isEditing = false;
 	}
@@ -126,8 +129,13 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 			label.setText(this.marshallable.marshal(item.itemProperty().getValue()));
 			if (marshallable instanceof MarshallableWithDescription) {
 				String description = ((MarshallableWithDescription<T>) marshallable).getDescription(item.itemProperty().getValue());
-				if (description != null) {
-					label.setTooltip(new Tooltip(description));
+				if (description != null && !description.trim().isEmpty()) {
+					if (cellDescriptor != null) {
+						cellDescriptor.describe(descriptionLabel, description);
+					}
+					else {
+						label.setTooltip(new Tooltip(description));
+					}
 //					label.setText(label.getText() + " (" + description + ")");
 				}
 			}
