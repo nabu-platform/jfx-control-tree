@@ -16,7 +16,7 @@ public class MouseLocation {
 	private static Map<Scene, MouseLocation> instances = new HashMap<Scene, MouseLocation>();
 	
 	private DoubleProperty x = new SimpleDoubleProperty(), y = new SimpleDoubleProperty();
-
+	
 	private EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 		@Override
 		public void handle(MouseEvent event) {
@@ -28,8 +28,11 @@ public class MouseLocation {
 	private EventHandler<DragEvent> dragHandler = new EventHandler<DragEvent>() {
 		@Override
 		public void handle(DragEvent event) {
-			x.set(event.getSceneX());
-			y.set(event.getSceneY());
+			// at the end, when you release drag mode, it suddenly sends out events with position 0,0
+			if (event.getSceneX() > 0 || event.getSceneY() > 0) {
+				x.set(event.getSceneX());
+				y.set(event.getSceneY());
+			}
 		}
 	};
 	
