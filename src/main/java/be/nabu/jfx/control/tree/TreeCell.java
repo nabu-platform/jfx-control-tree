@@ -231,6 +231,10 @@ public class TreeCell<T> implements Refreshable, Focusable {
 		}
 	}
 	
+	public List<TreeCell<T>> getChildren() {
+		return new ArrayList<TreeCell<T>>(children.values());
+	}
+	
 	public void expandAll() {
 		initialize();
 		expandedProperty().set(true);
