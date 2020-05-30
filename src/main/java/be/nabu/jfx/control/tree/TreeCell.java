@@ -659,23 +659,26 @@ public class TreeCell<T> implements Refreshable, Focusable {
 	}
 	
 	private void refreshItemDisplayIcon() {
-		displayIcon.getChildren().clear();
-		if (!item.leafProperty().getValue()) {
-			displayIcon.getChildren().add(expanded.get() ? expandedIcon : collapsedIcon);
-			// listen to changes
-			expanded.addListener(new ChangeListener<Boolean>() {
-				@Override
-				public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean newValue) {
-					// expanded
-					if (newValue)
-						displayIcon.getChildren().set(0, expandedIcon);
-					else
-						displayIcon.getChildren().set(0, collapsedIcon);
-				}
-			});
+		// it may not have been instantiated yet, for example when changing the leaf property really quickly
+		if (displayIcon != null) {
+			displayIcon.getChildren().clear();
+			if (!item.leafProperty().getValue()) {
+				displayIcon.getChildren().add(expanded.get() ? expandedIcon : collapsedIcon);
+				// listen to changes
+				expanded.addListener(new ChangeListener<Boolean>() {
+					@Override
+					public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean newValue) {
+						// expanded
+						if (newValue)
+							displayIcon.getChildren().set(0, expandedIcon);
+						else
+							displayIcon.getChildren().set(0, collapsedIcon);
+					}
+				});
+			}
+			else
+				displayIcon.getChildren().add(itemIcon);
 		}
-		else
-			displayIcon.getChildren().add(itemIcon);
 	}
 
 	public TreeCell<T> getCell(TreeItem<T> item) {
