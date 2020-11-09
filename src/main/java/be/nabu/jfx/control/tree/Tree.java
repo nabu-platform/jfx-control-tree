@@ -18,6 +18,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Parent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -29,6 +30,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.util.Callback;
 
 public class Tree<T> extends Control {
@@ -68,13 +71,33 @@ public class Tree<T> extends Control {
 	public Tree(Marshallable<T> marshallable, Updateable<T> updateable, CellDescriptor cellDescriptor) {
 		this(new BaseTreeCellValueFactory<T>(marshallable, updateable, cellDescriptor));
 	}
+	
+	private void autoresizeHelper(Parent parent) {
+		prefWidthProperty().unbind();
+		if (parent != null) {
+			if (parent instanceof Region) {
+				prefWidthProperty().bind(((Region) parent).widthProperty());
+			}
+		}
+	}
+	
+	public void autoresize() {
+		autoresizeHelper(getParent());
+		ChangeListener<Parent> parentChangeResizeListener = new ChangeListener<Parent>() {
+			@Override
+			public void changed(ObservableValue<? extends Parent> arg0, Parent arg1, Parent arg2) {
+				autoresizeHelper(arg2);
+			}
+		};
+		parentProperty().addListener(parentChangeResizeListener);
+	}
 
 	public Tree(Callback<TreeItem<T>, TreeCellValue<T>> cellValueFactory) {
 		initialize(cellValueFactory);
 	}
 
 	private void initialize(Callback<TreeItem<T>, TreeCellValue<T>> cellValueFactory) {
-		minWidthProperty().bind(prefWidthProperty());
+//		minWidthProperty().bind(prefWidthProperty());
 		this.cellValueFactory = cellValueFactory;
 		getStyleClass().add("jfx-tree");
 		// only change selection in the treecell depending on the actual selection model

@@ -1,8 +1,8 @@
 .jfx-tree {
 	-fx-skin: "be.nabu.jfx.control.tree.TreeSkin";
-	-fx-pref-width: 150px;
+/*	-fx-pref-width: 150px;
 	-fx-max-width: 150px;
-	-fx-min-width: 150px;
+	-fx-min-width: 150px;*/
 }
 
 .jfx-tree .tree-cell {
@@ -15,7 +15,7 @@
 }
 
 .jfx-tree .deselected {
-	-fx-background-color: -fx-control-inner-background;
+	/*-fx-background-color: -fx-control-inner-background;*/
 	-fx-text-fill: -fx-dark-text-color;
 }
 
