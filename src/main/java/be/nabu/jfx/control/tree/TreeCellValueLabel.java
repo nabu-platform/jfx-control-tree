@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -45,6 +46,8 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 		
 		// add the label to the hbox
 		node.getChildren().addAll(label, descriptionLabel);
+		// added after the fact
+		enrich();
 
 		// if the property can be updated, enable F2 on label
 		if (updateable != null) {
@@ -96,6 +99,7 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 				refresh();
 				node.getChildren().clear();
 				node.getChildren().addAll(label, descriptionLabel);
+				enrich();
 				isEditing = false;
 				cellProperty().getValue().select();
 				cellProperty().get().refresh();
@@ -109,6 +113,7 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 	public void undoEdit() {
 		node.getChildren().clear();
 		node.getChildren().addAll(label, descriptionLabel);
+		enrich();
 		cellProperty().getValue().select();
 		isEditing = false;
 	}
@@ -123,6 +128,15 @@ public class TreeCellValueLabel<T> implements TreeCellValue<T> {
 		return cell;
 	}
 
+	private void enrich() {
+		if (cellDescriptor != null) {
+			Node suffix = cellDescriptor.suffix(this.item.itemProperty().get());
+			if (suffix != null) {
+				node.getChildren().add(suffix);
+			}
+		}
+	}
+	
 	@Override
 	public void refresh() {
 		if (this.item.itemProperty().isNotNull().getValue()) {

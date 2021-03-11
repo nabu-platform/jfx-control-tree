@@ -58,6 +58,7 @@ public class TreeCell<T> implements Refreshable, Focusable {
 	private BooleanProperty expanded = new SimpleBooleanProperty(false);
 	BooleanProperty selected = new SimpleBooleanProperty(false);
 	private static Map<String, Image> images = new HashMap<String, Image>();
+	private BooleanProperty hideSelf = new SimpleBooleanProperty(false);
 	
 	/**
 	 * Indicates whether or not this component should be refreshed
@@ -390,6 +391,16 @@ public class TreeCell<T> implements Refreshable, Focusable {
 				spacer.prefWidthProperty().bind(tree.spacingProperty());
 				spacer.minWidthProperty().bind(tree.spacingProperty());
 				spacer.maxWidthProperty().bind(tree.spacingProperty());
+				// if we are the root and we are hidden, hide our spacer
+				if (getParent() == null) {
+					spacer.visibleProperty().bind(hideSelf.not());
+					spacer.managedProperty().bind(hideSelf.not());
+				}
+				// otherwise, if our parent is hidden, we don't need an additional spacer, hide it
+				else {
+					spacer.visibleProperty().bind(getParent().hideSelf.not());
+					spacer.managedProperty().bind(getParent().hideSelf.not());
+				}
 				node.getChildren().add(spacer);
 			}
 			
@@ -628,6 +639,12 @@ public class TreeCell<T> implements Refreshable, Focusable {
 		if (itemDisplay == null) {
 			itemDisplay = new HBox();
 			displayIcon = new HBox();
+			
+			itemDisplay.visibleProperty().bind(hideSelf.not());
+			itemDisplay.managedProperty().bind(hideSelf.not());
+			displayIcon.visibleProperty().bind(hideSelf.not());
+			displayIcon.managedProperty().bind(hideSelf.not());
+			
 			itemDisplay.getChildren().add(displayIcon);
 			itemDisplay.setAlignment(Pos.CENTER_LEFT);
 			displayIcon.setAlignment(Pos.CENTER);
@@ -823,5 +840,9 @@ public class TreeCell<T> implements Refreshable, Focusable {
 	
 	public boolean isLoaded() {
 		return isInitialized && isLoaded;
+	}
+	
+	public BooleanProperty hideSelfProperty() {
+		return hideSelf;
 	}
 }

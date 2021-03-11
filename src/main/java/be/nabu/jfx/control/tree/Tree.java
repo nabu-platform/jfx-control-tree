@@ -18,6 +18,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Control;
@@ -30,7 +31,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.util.Callback;
 
@@ -164,15 +164,23 @@ public class Tree<T> extends Control {
 	}
 	
 	public void autoscroll(TreeCell<T> to) {
+		autoscroll(to, false);
+	}
+	
+	public void autoscroll(TreeCell<T> to, boolean focus) {
 		ScrollPane parent = JFXUtils.getScrollParent(getRootCell().getNode());
 		if (parent != null) {
-			JFXUtils.focusInScroll(parent, to, false);
+			JFXUtils.focusInScroll(parent, to, false, focus);
 		}
 	}
 	
 	public void autoscroll() {
+		autoscroll(false);
+	}
+	
+	public void autoscroll(boolean focus) {
 		if (getSelectionModel().getSelectedItem() != null) {
-			autoscroll(getSelectionModel().getSelectedItem());
+			autoscroll(getSelectionModel().getSelectedItem(), focus);
 		}
 	}
 	
@@ -454,7 +462,15 @@ public class Tree<T> extends Control {
 	public void setCellDescriptor(CellDescriptor cellEnricher) {
 		this.cellDescriptor = cellEnricher;
 	}
+	// reusing old descriptor interface, but its already static and non-generic
+	// don't want to bother with retrofit now, so we just pass in object
 	public static interface CellDescriptor {
-		public void describe(Label label, String description);
+		public default void describe(Label label, String description) {
+			// do nothing
+		}
+		public default Node suffix(Object entry) {
+			// do nothing
+			return null;
+		}
 	}
 }
