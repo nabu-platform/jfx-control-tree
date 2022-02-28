@@ -380,6 +380,9 @@ public class TreeCell<T> implements Refreshable, Focusable {
 	}
 	
 	public Region getNode() {
+		if (!isLoaded && tree.isRefreshOnFirstOpen()) {
+			refresh();
+		}
 		isLoaded = true;
 		if (node == null) {
 			node = new HBox();

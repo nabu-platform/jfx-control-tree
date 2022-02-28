@@ -48,6 +48,8 @@ public class Tree<T> extends Control {
 	private boolean autodetectDirty = true;
 	private String userStyleAgent;
 	private boolean invertSelection, readOnly;
+	// if you can update the tree while it has never been opened, refreshes are not guaranteed to go through
+	private boolean refreshOnFirstOpen;
 	
 	private Callback<TreeItem<T>, TreeCellValue<T>> cellValueFactory;
 	
@@ -473,4 +475,12 @@ public class Tree<T> extends Control {
 			return null;
 		}
 	}
+	public boolean isRefreshOnFirstOpen() {
+		return refreshOnFirstOpen;
+	}
+
+	public void setRefreshOnFirstOpen(boolean refreshOnFirstOpen) {
+		this.refreshOnFirstOpen = refreshOnFirstOpen;
+	}
+	
 }
