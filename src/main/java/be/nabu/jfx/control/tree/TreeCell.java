@@ -2,6 +2,7 @@ package be.nabu.jfx.control.tree;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,16 +19,19 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
@@ -39,6 +43,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 /**
  * Much care has been given into the ability to retain the same cell/item combination at all times
@@ -425,6 +430,32 @@ public class TreeCell<T> implements Refreshable, Focusable {
 									tree.getSelectionModel().getSelectedItems().remove(TreeCell.this);
 									event.consume();
 								}
+								// if we have shift down and don't have invert selection on (which is weird currently)
+								// we do a multiselect from the last selected
+								else if (event.isShiftDown() && !tree.isInvertSelection()) {
+									ObservableList<TreeCell<T>> current = tree.getSelectionModel().getSelectedItems();
+									TreeCell<T> last = current.get(current.size() - 1);
+									// we keep stepping to the next item until we find the current one
+									List<TreeCell<T>> siblings = last.getParent().getChildren();
+									
+									int lastIndex = siblings.indexOf(last);
+									int myIndex = siblings.indexOf(TreeCell.this);
+									
+									// if we are not part of the same parent, we don't do anything atm. walking the tree can be difficult, especially for lazily loaded trees
+									if (myIndex >= 0) {
+										// we are further than the last index, select everything in between
+										if (myIndex > lastIndex) {
+											for (int i = lastIndex + 1; i <= myIndex; i++) {
+												select(siblings.get(i), true);
+											}
+										}
+										else if (myIndex < lastIndex) {
+											for (int i = lastIndex - 1; i >= myIndex; i--) {
+												select(siblings.get(i), true);	
+											}
+										}
+									}
+								}
 								// if the item is not selected yet, select it first
 								// otherwise trigger selection _only_ if the mouse button is primary, otherwise it has the effect that the right click context menu is disabled every time even if it is selected
 								else if (!tree.getSelectionModel().getSelectedItems().contains(TreeCell.this) || event.getButton() == MouseButton.PRIMARY) {
@@ -674,8 +705,47 @@ public class TreeCell<T> implements Refreshable, Focusable {
 				}
 			});
 			itemDisplay.getChildren().add(getCellValue().getNode());
+			
+			ReadOnlyStringProperty tooltipProperty = item.tooltipProperty();
+			if (tooltipProperty != null) {
+				SimpleObjectProperty<Tooltip> tooltipObjectProperty = new SimpleObjectProperty<Tooltip>();
+				// if we have an initial value, install it immediately
+				if (tooltipProperty.get() != null) {
+					tooltipObjectProperty.set(new Tooltip(tooltipProperty.get()));
+					trySetDelay(tooltipObjectProperty.get());
+					Tooltip.install(itemDisplay, tooltipObjectProperty.get());
+				}
+				// listen for changes
+				tooltipProperty.addListener(new ChangeListener<String>() {
+					@Override
+					public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+						if (tooltipObjectProperty.get() != null) {
+							Tooltip.uninstall(itemDisplay, tooltipObjectProperty.get());
+							tooltipObjectProperty.set(null);
+						}
+						if (newValue != null && !newValue.trim().isEmpty()) {
+							tooltipObjectProperty.set(new Tooltip(newValue));
+							trySetDelay(tooltipObjectProperty.get());
+							Tooltip.install(itemDisplay, tooltipObjectProperty.get());
+						}
+					}
+				});
+			}
 		}
 		return itemDisplay;
+	}
+	
+	private void trySetDelay(Tooltip tooltip) {
+		for (Method method : tooltip.getClass().getMethods()) {
+			if (method.getName().equals("setShowDelay")) {
+				try {
+					method.invoke(tooltip, Duration.millis(50));
+				}
+				catch (Exception e) {
+					// ignore
+				}
+			}
+		}
 	}
 	
 	private void refreshItemDisplayIcon() {

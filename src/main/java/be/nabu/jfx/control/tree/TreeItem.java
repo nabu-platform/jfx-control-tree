@@ -3,6 +3,7 @@ package be.nabu.jfx.control.tree;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
@@ -21,5 +22,10 @@ public interface TreeItem<T> extends Refreshable {
 	
 	public default ReadOnlyBooleanProperty renameableProperty() {
 		return editableProperty();
+	}
+	
+	// A tooltip for the item
+	public default ReadOnlyStringProperty tooltipProperty() {
+		return null;
 	}
 }
