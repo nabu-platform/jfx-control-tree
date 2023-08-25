@@ -9,6 +9,8 @@ import java.util.Map;
 
 import be.nabu.jfx.control.tree.clipboard.ClipboardHandler;
 import be.nabu.jfx.control.tree.drag.TreeDragDrop;
+import be.nabu.jfx.control.tree.drag.TreeDragListener;
+import be.nabu.jfx.control.tree.drag.TreeDropListener;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -50,6 +52,9 @@ public class Tree<T> extends Control {
 	private boolean invertSelection, readOnly;
 	// if you can update the tree while it has never been opened, refreshes are not guaranteed to go through
 	private boolean refreshOnFirstOpen;
+	
+	private TreeDragListener<?> dragListener;
+	private List<TreeDropListener<T>> dropListeners;
 	
 	private Callback<TreeItem<T>, TreeCellValue<T>> cellValueFactory;
 	
@@ -482,5 +487,21 @@ public class Tree<T> extends Control {
 	public void setRefreshOnFirstOpen(boolean refreshOnFirstOpen) {
 		this.refreshOnFirstOpen = refreshOnFirstOpen;
 	}
-	
+
+	public TreeDragListener<?> getDragListener() {
+		return dragListener;
+	}
+
+	public void setDragListener(TreeDragListener<?> dragListener) {
+		this.dragListener = dragListener;
+	}
+
+	public List<TreeDropListener<T>> getDropListeners() {
+		return dropListeners;
+	}
+
+	public void setDropListeners(List<TreeDropListener<T>> dropListeners) {
+		this.dropListeners = dropListeners;
+	}
+
 }

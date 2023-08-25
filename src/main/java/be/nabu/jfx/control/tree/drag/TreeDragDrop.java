@@ -1,9 +1,6 @@
 package be.nabu.jfx.control.tree.drag;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import be.nabu.jfx.control.tree.Tree;
 import be.nabu.jfx.control.tree.TreeCell;
@@ -31,25 +28,25 @@ public class TreeDragDrop {
 	
 	private EndHandler endHandler;
 	
-	private Map<Tree<?>, TreeDragListener<?>> dragListeners = new HashMap<Tree<?>, TreeDragListener<?>>();
-	private Map<Tree<?>, List<TreeDropListener<?>>> dropListeners = new HashMap<Tree<?>, List<TreeDropListener<?>>>();
 	
 	private static TreeDragDrop instance = new TreeDragDrop();
 	
 	public static <T> void makeDraggable(Tree<T> tree, TreeDragListener<T> listener) {
-		if (!instance.dragListeners.containsKey(tree)) {
-			instance.dragListeners.put(tree, listener);
+		if (tree.getDragListener() == null) {
+//		if (!instance.dragListeners.containsKey(tree)) {
+//			instance.dragListeners.put(tree, listener);
+			tree.setDragListener(listener);
 			instance.makeDraggable(tree);
 		}
 	}
 	
 	public static <T> void makeDroppable(Tree<T> tree, TreeDropListener<T> listener) {
-		if (!instance.dropListeners.containsKey(tree)) {
-			instance.dropListeners.put(tree, new ArrayList<TreeDropListener<?>>());
+		if (tree.getDropListeners() == null) {
+			tree.setDropListeners(new ArrayList<TreeDropListener<T>>());
 			instance.makeDroppable(tree);
 		}
-		if (!instance.dropListeners.get(tree).contains(listener)) {
-			instance.dropListeners.get(tree).add(listener);
+		if (!tree.getDropListeners().contains(listener)) {
+			tree.getDropListeners().add(listener);
 		}
 	}
 	
@@ -66,16 +63,16 @@ public class TreeDragDrop {
 			@Override
 			public void handle(MouseEvent event) {
 				dragSource = (TreeCell<?>) ((Node) event.getTarget()).getUserData();
-				if (dragListeners.get(dragSource.getTree()).canDrag(dragSource)) {
+				if (dragSource.getTree().getDragListener().canDrag(dragSource)) {
 					clipboard = new ClipboardContent();
-					dragboard = dragSource.getTree().startDragAndDrop(dragListeners.get(dragSource.getTree()).getTransferMode());
-					DataFormat format = getDataFormat(dragListeners.get(dragSource.getTree()).getDataType(dragSource));
+					dragboard = dragSource.getTree().startDragAndDrop(dragSource.getTree().getDragListener().getTransferMode());
+					DataFormat format = getDataFormat(dragSource.getTree().getDragListener().getDataType(dragSource));
 					clipboard.put(format, getPath(dragSource.getItem()));
 					if (dragSource.getTree().getId() != null) {
 						clipboard.put(getDataFormat(DATA_TYPE_TREE), dragSource.getTree().getId());
 					}
 					dragboard.setContent(clipboard);
-					String asText = dragListeners.get(dragSource.getTree()).getAsText(dragSource);
+					String asText = dragSource.getTree().getDragListener().getAsText(dragSource);
 					if (asText != null) {
 						clipboard.put(DataFormat.PLAIN_TEXT, asText);
 					}
@@ -84,7 +81,7 @@ public class TreeDragDrop {
 					// we subscribe to this event do reset the state of the ongoing drag
 					endHandler = new EndHandler();
 					dragSource.getTree().getScene().addEventHandler(DragEvent.DRAG_DONE, endHandler);
-					dragListeners.get(dragSource.getTree()).drag(dragSource);
+					dragSource.getTree().getDragListener().drag(dragSource);
 				}
 				else {
 					dragSource = null;
@@ -130,11 +127,11 @@ public class TreeDragDrop {
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
 			public void handle(DragEvent event) {
-				TreeCell target = (TreeCell<?>) ((Node) event.getTarget()).getUserData();
+				TreeCell<?> target = (TreeCell<?>) ((Node) event.getTarget()).getUserData();
 				if (dragSource != null) {
-					for (TreeDropListener<?> listener : dropListeners.get(target.getTree())) {
-						if (listener.canDrop(dragListeners.get(dragSource.getTree()).getDataType(dragSource), target, dragSource, dragListeners.get(dragSource.getTree()).getTransferMode())) {
-							event.acceptTransferModes(dragListeners.get(dragSource.getTree()).getTransferMode());
+					for (TreeDropListener listener : target.getTree().getDropListeners()) {
+						if (listener.canDrop(dragSource.getTree().getDragListener().getDataType(dragSource), target, dragSource, dragSource.getTree().getDragListener().getTransferMode())) {
+							event.acceptTransferModes(dragSource.getTree().getDragListener().getTransferMode());
 							event.consume();
 							break;
 						}
@@ -147,16 +144,16 @@ public class TreeDragDrop {
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			@Override
 			public void handle(DragEvent event) {
-				if (!event.isConsumed() && !event.isDropCompleted() && dragSource != null && dragSource.getTree() != null && dragListeners.get(dragSource.getTree()) != null) {
-					TreeCell target = (TreeCell<?>) ((Node) event.getTarget()).getUserData();
+				if (!event.isConsumed() && !event.isDropCompleted() && dragSource != null && dragSource.getTree() != null && dragSource.getTree().getDragListener() != null) {
+					TreeCell<?> target = (TreeCell<?>) ((Node) event.getTarget()).getUserData();
 					// drop it on the first one that accepts
-					for (TreeDropListener<?> listener : dropListeners.get(target.getTree())) {
-						if (listener.canDrop(dragListeners.get(dragSource.getTree()).getDataType(dragSource), target, dragSource, dragListeners.get(dragSource.getTree()).getTransferMode())) {
-							listener.drop(dragListeners.get(dragSource.getTree()).getDataType(dragSource), target, dragSource, dragListeners.get(dragSource.getTree()).getTransferMode());
+					for (TreeDropListener listener : target.getTree().getDropListeners()) {
+						if (listener.canDrop(dragSource.getTree().getDragListener().getDataType(dragSource), target, dragSource, dragSource.getTree().getDragListener().getTransferMode())) {
+							listener.drop(dragSource.getTree().getDragListener().getDataType(dragSource), target, dragSource, dragSource.getTree().getDragListener().getTransferMode());
 							break;
 						}
 					}
-					dragListeners.get(dragSource.getTree()).stopDrag(dragSource, true);
+					dragSource.getTree().getDragListener().stopDrag(dragSource, true);
 					stopDrag(true);
 					event.setDropCompleted(true);
 				}
@@ -188,7 +185,7 @@ public class TreeDragDrop {
 				dragSource.getTree().getScene().removeEventHandler(DragEvent.DRAG_DONE, endHandler);
 			}
 			if (!successful) {
-				dragListeners.get(dragSource.getTree()).stopDrag(dragSource, false);
+				dragSource.getTree().getDragListener().stopDrag(dragSource, false);
 			}
 			endHandler = null;
 			dragSource = null;
